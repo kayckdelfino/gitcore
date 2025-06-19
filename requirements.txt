@@ -2,3 +2,4 @@ gitpython
 pytest
 langchain
 sentence-transformers
+faiss-cpu

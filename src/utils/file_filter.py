@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 TEXT_EXTENSIONS = {
     ".py",
@@ -22,7 +23,8 @@ IGNORE_DIRS = {".git", "node_modules", "venv", "__pycache__"}
 
 def is_text_file(filepath: str) -> bool:
     """
-    Check if a file is a text file.
+    Check if a file is a relevant text file for analysis.
+    Returns True if the file should be included, False otherwise.
     """
     _, ext = os.path.splitext(filepath)
     filename = os.path.basename(filepath)
@@ -38,14 +40,15 @@ def is_text_file(filepath: str) -> bool:
     return False
 
 
-def filter_files(repo_path: str):
+def list_relevant_files(repo_path: str) -> List[str]:
     """
-    Remove files that are not considered relevant text files from the cloned repository.
+    List all relevant text files in the repository, ignoring unwanted files and directories.
     """
+    relevant_files = []
     for root, dirs, files in os.walk(repo_path, topdown=True):
-        # Remove ignored directories in-place
         dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
         for file in files:
             file_path = os.path.join(root, file)
-            if not is_text_file(file_path):
-                os.remove(file_path)
+            if is_text_file(file_path):
+                relevant_files.append(file_path)
+    return relevant_files

@@ -11,6 +11,10 @@ def test_chunk_file_content():
     assert any("def foo" in chunk for chunk in chunks)
 
 
+def test_chunk_file_content_empty():
+    assert chunk_file_content("") == []
+
+
 def test_chunk_repository_files():
     with tempfile.TemporaryDirectory() as tmpdir:
         file1 = os.path.join(tmpdir, "file1.py")
@@ -24,3 +28,8 @@ def test_chunk_repository_files():
         assert all(isinstance(t, tuple) and len(t) == 2 for t in chunks)
         assert any("foo" in chunk for _, chunk in chunks)
         assert any("Hello" in chunk for _, chunk in chunks)
+
+
+def test_chunk_repository_files_no_relevant():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        assert chunk_repository_files(tmpdir) == []
